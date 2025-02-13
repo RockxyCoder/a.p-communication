@@ -1,1 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P Top Secret</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io();
+            const username = prompt('Enter your username:');
+            const channel = 'general';
+            socket.emit('join', { username, channel });
+
+            socket.on('message', ({ user, text }) => {
+                const messages = document.getElementById('messages');
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `${user}: ${text}`;
+                messages.appendChild(messageElement);
+            });
+
+            document.getElementById('send').addEventListener('click', () => {
+                const text = document.getElementById('message').value;
+                socket.emit('message', { text });
+                document.getElementById('message').value = '';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="chat">
+        <div id="messages" style="height: 300px; overflow-y: scroll;"></div>
+        <input id="message" type="text" placeholder="Type a message...">
+        <button id="send">Send</button>
+    </div>
+</body>
+</html>
 
